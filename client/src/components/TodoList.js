@@ -5,6 +5,7 @@ import Todo from './Todo';
 import FormRow from './UI/FormRow';
 import Button from './UI/Button';
 import FormRowSelect from './UI/FormRowSelect';
+import Dialog from './UI/Dialog';
 
 const axiosInstance = axios.create({
   baseURL: '/api/v1',
@@ -116,19 +117,7 @@ const TodoList = () => {
                 ))}
             </div>
           </div>
-          <span className='verify'>
-            <span className='verify-question'>
-              Sure you want to delete this task?
-            </span>
-            <span className='verify-btns'>
-              <span className='verify-btn' data-delete='yes'>
-                Yes
-              </span>
-              <span className='verify-btn' data-delete='No'>
-                No
-              </span>
-            </span>
-          </span>
+          <Dialog/>
         </div>
       </div>
     </>
