@@ -4,17 +4,28 @@ import './TodoList.scss';
 import Todo from './Todo';
 import FormRow from './UI/FormRow';
 import Button from './UI/Button';
+import FormRowSelect from './UI/FormRowSelect';
 
 const axiosInstance = axios.create({
   baseURL: '/api/v1',
 });
 
+const tagOptions = [
+  'select',
+  'health',
+  'education',
+  'recreation',
+  'adventure',
+  'home',
+  'work',
+  'sport',
+  'hobby',
+  'other',
+];
+
 const TodoList = () => {
   let [todos, setTodos] = useState([]);
-  let [todo, setTodo] = useState({
-    task: '',
-    tag: '',
-  });
+  let [todo, setTodo] = useState({ task: '', tag: '' });
 
   useEffect(() => {
     (async () => {
@@ -69,12 +80,19 @@ const TodoList = () => {
                 placeholder='Go to the gym...'
                 handleChange={handleChange}
               />
-              <FormRow
+              {/* <FormRow
                 type='text'
                 value={todo.tag}
                 name='tag'
                 labelText='Tag'
                 placeholder='Health, Education...'
+                handleChange={handleChange}
+              /> */}
+              <FormRowSelect
+                list={tagOptions}
+                value={todo.tag}
+                name='tag'
+                labelText='Tag'
                 handleChange={handleChange}
               />
             </div>

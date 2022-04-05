@@ -1,0 +1,35 @@
+.select-wrapper {
+  position: relative;
+  // Dropdown icon
+  &::after {
+    color: #d2cfcf;
+    content: '▾';
+    margin-right: 10px;
+    pointer-events: none;
+    position: absolute;
+    right: 10px;
+    top: 7px;
+    font-size: 20px;
+  }
+}
+
+// Default state
+.select {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  background: #f7f7f726;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  padding: 12px 15px;
+  width: 100%;
+  border-radius: 2px;
+  color: #757272;
+
+  &:focus {
+    color: #d2cfcf;
+  }
+  &::-ms-expand {
+    display: none;
+  }
+}
