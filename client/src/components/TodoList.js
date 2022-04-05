@@ -11,7 +11,7 @@ const axiosInstance = axios.create({
 
 const TodoList = () => {
   let [todos, setTodos] = useState([]);
-  const [todo, setTodo] = useState({
+  let [todo, setTodo] = useState({
     task: '',
     tag: '',
   });
@@ -35,6 +35,21 @@ const TodoList = () => {
       };
     });
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      let { data } = await axiosInstance.post('/todos', todo);
+      let { todo: todoItem } = data;
+      console.log('todoItem', todoItem);
+      setTodos((prevState) => ({ ...prevState, [todos.length]: todoItem }));
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  console.log('todos', todos);
+  console.log('todo', todo);
 
   return (
     <>
@@ -62,14 +77,16 @@ const TodoList = () => {
                 handleChange={handleChange}
               />
             </div>
-            <Button>Add Task</Button>
+            <Button handleSubmit={handleSubmit}>Add Task</Button>
           </div>
         </div>
         <div className='dashboard-right'>
           <div className='right-list'>
             <h3 className='right-list-h3'>Add a task to begin.</h3>
             <div className='list-flex'>
-              <Todo />
+              {todos &&
+                todos.length &&
+                todos.map((todo) => <Todo task={todo.task} tag={todo.tag} />)}
             </div>
           </div>
           <span className='verify'>

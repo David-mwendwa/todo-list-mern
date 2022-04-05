@@ -1,8 +1,12 @@
 import React from 'react';
 import './Button.scss';
 
-const Button = ({ children }) => {
-  return <button className='task-add'>{children}</button>;
+const Button = ({ children, handleSubmit }) => {
+  return (
+    <button onClick={handleSubmit} className='task-add'>
+      {children}
+    </button>
+  );
 };
 
 export default Button;
