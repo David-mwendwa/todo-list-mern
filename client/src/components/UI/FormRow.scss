@@ -1,0 +1,23 @@
+.task {
+  &-input {
+    padding: 12px 15px;
+    background-color: #f7f7f726;
+    font-family: inherit;
+    border: none;
+    border-radius: 2px;
+    color: var(--font-ct);
+    margin-bottom: 0.5em;
+    transition: var(--ease);
+    &:focus {
+      transition: var(--ease);
+      background-color: var(--bc-wht);
+      color: var(--primary-dark);
+    }
+  }
+  &-label {
+    color: #d2cfcf;
+    font-family: inherit;
+    font-size: 0.8em;
+    margin-bottom: 0.3em;
+  }
+}
