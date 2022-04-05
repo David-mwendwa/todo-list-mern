@@ -25,7 +25,7 @@ const TodoList = () => {
         console.log(error.message);
       }
     })();
-  }, [setTodos]);
+  }, [todos, setTodos]);
 
   const handleChange = (e) => {
     setTodo((prevState) => {
@@ -46,6 +46,10 @@ const TodoList = () => {
     } catch (error) {
       console.log(error.message);
     }
+    setTodo({
+      task: '',
+      tag: '',
+    });
   };
 
   console.log('todos', todos);
