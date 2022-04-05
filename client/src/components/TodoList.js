@@ -41,19 +41,16 @@ const TodoList = () => {
     try {
       let { data } = await axiosInstance.post('/todos', todo);
       let { todo: todoItem } = data;
-      console.log('todoItem', todoItem);
-      setTodos((prevState) => ({ ...prevState, [todos.length]: todoItem }));
+      setTodos((prevState) => ({ ...prevState, todoItem }));
     } catch (error) {
       console.log(error.message);
     }
-    setTodo({
-      task: '',
-      tag: '',
-    });
+    setTodo({ task: '', tag: '' });
   };
 
-  console.log('todos', todos);
-  console.log('todo', todo);
+  const handleDelete = async (taskId) => {
+    await axiosInstance.delete(`/todos/${taskId}`);
+  };
 
   return (
     <>
@@ -90,7 +87,15 @@ const TodoList = () => {
             <div className='list-flex'>
               {todos &&
                 todos.length &&
-                todos.map((todo) => <Todo task={todo.task} tag={todo.tag} />)}
+                todos.map((todo) => (
+                  <Todo
+                    task={todo.task}
+                    tag={todo.tag}
+                    taskId={todo._id}
+                    key={todo._id}
+                    handleDelete={handleDelete}
+                  />
+                ))}
             </div>
           </div>
           <span className='verify'>
