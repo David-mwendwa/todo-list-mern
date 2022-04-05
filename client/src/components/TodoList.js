@@ -27,6 +27,7 @@ const tagOptions = [
 const TodoList = () => {
   let [todos, setTodos] = useState([]);
   let [todo, setTodo] = useState({ task: '', tag: '' });
+  let [confirmDelete, setConfimDelete] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -61,7 +62,10 @@ const TodoList = () => {
   };
 
   const handleDelete = async (taskId) => {
-    await axiosInstance.delete(`/todos/${taskId}`);
+    // setConfimDelete(true);
+    if (window.confirm('Are you sure you want to delete this task')) {
+      await axiosInstance.delete(`/todos/${taskId}`);
+    }
   };
 
   return (
@@ -117,7 +121,12 @@ const TodoList = () => {
                 ))}
             </div>
           </div>
-          <Dialog/>
+          {confirmDelete && (
+            <Dialog
+              deleteTodo={() => setConfimDelete(true)}
+              closeDialog={() => setConfimDelete(false)}
+            />
+          )}
         </div>
       </div>
     </>
