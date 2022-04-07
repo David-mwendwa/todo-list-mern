@@ -6,6 +6,8 @@ import FormRow from './UI/FormRow';
 import Button from './UI/Button';
 import FormRowSelect from './UI/FormRowSelect';
 import Dialog from './UI/Dialog';
+import { addTodo } from '../redux/todo/todoActions';
+import { connect } from 'react-redux';
 
 const axiosInstance = axios.create({
   baseURL: '/api/v1',
@@ -24,7 +26,7 @@ const tagOptions = [
   'other',
 ];
 
-const TodoList = () => {
+const TodoList = ({ addTodo }) => {
   let [todos, setTodos] = useState([]);
   let [todo, setTodo] = useState({ task: '', tag: '' });
   let [confirmDelete, setConfimDelete] = useState(false);
@@ -49,15 +51,9 @@ const TodoList = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      let { data } = await axiosInstance.post('/todos', todo);
-      let { todo: todoItem } = data;
-      setTodos((prevState) => ({ ...prevState, todoItem }));
-    } catch (error) {
-      console.log(error.message);
-    }
+    addTodo(todo);
     setTodo({ task: '', tag: '' });
   };
 
@@ -133,4 +129,16 @@ const TodoList = () => {
   );
 };
 
-export default TodoList;
+const mapStateToProps = (state) => {
+  return {
+    todo: state.todo,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addTodo: (todo) => dispatch(addTodo(todo)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TodoList);
