@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
 import './TodoList.scss';
 import Todo from './Todo';
 import FormRow from './UI/FormRow';
 import Button from './UI/Button';
 import FormRowSelect from './UI/FormRowSelect';
-import Dialog from './UI/Dialog';
-import { addTodo } from '../redux/todo/todoActions';
-import { connect } from 'react-redux';
-
-const axiosInstance = axios.create({
-  baseURL: '/api/v1',
-});
+// import Dialog from './UI/Dialog';
+import { addTodo, removeTodo, fetchTodos } from '../redux/todo/todoActions';
 
 const tagOptions = [
   'select',
@@ -26,21 +21,14 @@ const tagOptions = [
   'other',
 ];
 
-const TodoList = ({ addTodo }) => {
-  let [todos, setTodos] = useState([]);
+const TodoList = () => {
+  const dispatch = useDispatch();
+  const { todos } = useSelector((state) => state.todo);
   let [todo, setTodo] = useState({ task: '', tag: '' });
-  let [confirmDelete, setConfimDelete] = useState(false);
 
   useEffect(() => {
-    (async () => {
-      try {
-        let { data } = await axiosInstance('/todos');
-        setTodos(data.todos);
-      } catch (error) {
-        console.log(error.message);
-      }
-    })();
-  }, [todos, setTodos]);
+    dispatch(fetchTodos());
+  }, [dispatch]);
 
   const handleChange = (e) => {
     setTodo((prevState) => {
@@ -53,14 +41,13 @@ const TodoList = ({ addTodo }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addTodo(todo);
+    dispatch(addTodo(todo));
     setTodo({ task: '', tag: '' });
   };
 
   const handleDelete = async (taskId) => {
-    // setConfimDelete(true);
     if (window.confirm('Are you sure you want to delete this task')) {
-      await axiosInstance.delete(`/todos/${taskId}`);
+      dispatch(removeTodo(taskId));
     }
   };
 
@@ -112,33 +99,15 @@ const TodoList = ({ addTodo }) => {
                     tag={todo.tag}
                     taskId={todo._id}
                     key={todo._id}
-                    handleDelete={handleDelete}
+                    handleDelete={() => handleDelete(todo._id)}
                   />
                 ))}
             </div>
           </div>
-          {confirmDelete && (
-            <Dialog
-              deleteTodo={() => setConfimDelete(true)}
-              closeDialog={() => setConfimDelete(false)}
-            />
-          )}
         </div>
       </div>
     </>
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    todo: state.todo,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    addTodo: (todo) => dispatch(addTodo(todo)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(TodoList);
+export default TodoList;
