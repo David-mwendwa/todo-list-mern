@@ -19,21 +19,12 @@ const reducer = (state = { todos: [] }, action) => {
       };
     case ADD_TODO_SUCCESS:
       let todo = action.payload;
-      const isTodoExist = state.todos.find((t) => t.name === todo.name);
-      if (isTodoExist) {
-        return {
-          ...state,
-          todos: state.todos.map((t) =>
-            todo.name === isTodoExist.name ? todo : t
-          ),
-        };
-      } else {
-        return {
-          ...state,
-          loading: false,
-          todos: [...state.todos, todo],
-        };
-      }
+      return {
+        ...state,
+        loading: false,
+        todos: [...state.todos, todo],
+      };
+
     case ADD_TODO_ERROR:
       return {
         loading: false,
@@ -42,7 +33,7 @@ const reducer = (state = { todos: [] }, action) => {
     case REMOVE_TODO_ITEM:
       return {
         ...state,
-        todos: state.todos.filter((t) => t.id !== action.payload),
+        todos: state.todos.filter((t) => t._id !== action.payload),
       };
     case FETCH_TODOS_SUCCESS:
       return {
