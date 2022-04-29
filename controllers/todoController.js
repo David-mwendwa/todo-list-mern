@@ -38,7 +38,7 @@ const updateTodo = async (req, res) => {
   todo.status = req.body.status;
   todo.priority = req.body.priority;
   await todo.save();
-  res.status(StatusCodes.CREATED).json({ todo });
+  res.status(StatusCodes.OK).json({ todo, success: true });
 };
 
 const deleteTodo = async (req, res) => {

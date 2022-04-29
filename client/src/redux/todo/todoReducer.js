@@ -2,6 +2,9 @@ import {
   ADD_TODO_START,
   ADD_TODO_SUCCESS,
   ADD_TODO_ERROR,
+  EDIT_TODO_START,
+  EDIT_TODO_SUCCESS,
+  EDIT_TODO_ERROR,
   REMOVE_TODO_ITEM,
   FETCH_TODOS_START,
   FETCH_TODOS_SUCCESS,
@@ -18,15 +21,30 @@ const reducer = (state = { todos: [] }, action) => {
         loading: true,
       };
     case ADD_TODO_SUCCESS:
-      let todo = action.payload;
       return {
         ...state,
         loading: false,
-        todos: [...state.todos, todo],
+        todos: [...state.todos, action.payload],
       };
-
-    case ADD_TODO_ERROR:
+    case EDIT_TODO_START:
       return {
+        ...state,
+        isEdited: false,
+        loading: true,
+      };
+    case EDIT_TODO_SUCCESS:
+      console.log('edit payload match', action.payload);
+      const { todo, id, isEdited } = action.payload;
+      return {
+        ...state,
+        loading: false,
+        todos: state.todos.map((t) => (t._id === id ? todo : t)),
+        isEdited: isEdited,
+      };
+    case ADD_TODO_ERROR:
+    case EDIT_TODO_ERROR:
+      return {
+        ...state,
         loading: false,
         error: action.payload,
       };
@@ -38,11 +56,13 @@ const reducer = (state = { todos: [] }, action) => {
     case FETCH_TODOS_SUCCESS:
       return {
         loading: false,
+        isEdited: false,
         todos: action.payload,
       };
     case FETCH_TODOS_ERROR:
       return {
         loading: false,
+        isEdited: false,
         error: action.payload,
       };
     case CLEAR_ERRORS:

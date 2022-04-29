@@ -6,7 +6,12 @@ import FormRow from './UI/FormRow';
 import Button from './UI/Button';
 import FormRowSelect from './UI/FormRowSelect';
 // import Dialog from './UI/Dialog';
-import { addTodo, removeTodo, fetchTodos } from '../redux/todo/todoActions';
+import {
+  addTodo,
+  editTodo,
+  removeTodo,
+  fetchTodos,
+} from '../redux/todo/todoActions';
 
 const tagOptions = [
   'select',
@@ -22,27 +27,38 @@ const tagOptions = [
 ];
 
 const TodoList = () => {
+  const { todos, isEdited } = useSelector((state) => state.todo);
+  const [task, setTask] = useState('');
+  const [tag, setTag] = useState('');
+  const [editId, setEditId] = useState('');
   const dispatch = useDispatch();
-  const { todos } = useSelector((state) => state.todo);
-  let [todo, setTodo] = useState({ task: '', tag: '' });
+  const todo = { task, tag };
 
   useEffect(() => {
     dispatch(fetchTodos());
   }, [dispatch]);
 
-  const handleChange = (e) => {
-    setTodo((prevState) => {
-      return {
-        ...prevState,
-        [e.target.name]: e.target.value,
-      };
-    });
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (isEdited) {
+      return handleEditSubmit(editId, todo);
+    }
     dispatch(addTodo(todo));
-    setTodo({ task: '', tag: '' });
+    setTask('');
+    setTag('');
+  };
+
+  // TODO: handle submit after updating todo
+  const handleEditSubmit = (id, todo) => {
+    dispatch(editTodo(id, todo));
+  };
+
+  const setIsEditFormValues = (id) => {
+    const todoToEdit = todos.find((todo) => todo._id === id);
+    const { task: _task, tag: _tag } = todoToEdit;
+    setTask(_task);
+    setTag(_tag);
+    setEditId(id);
   };
 
   const handleDelete = async (taskId) => {
@@ -62,11 +78,11 @@ const TodoList = () => {
             <div className='task-info task-item'>
               <FormRow
                 type='text'
-                value={todo.task}
+                value={task}
                 name='task'
                 labelText='Task'
                 placeholder='Go to the gym...'
-                handleChange={handleChange}
+                handleChange={(e) => setTask(e.target.value)}
               />
               {/* <FormRow
                 type='text'
@@ -78,10 +94,10 @@ const TodoList = () => {
               /> */}
               <FormRowSelect
                 list={tagOptions}
-                value={todo.tag}
+                value={tag}
                 name='tag'
                 labelText='Tag'
-                handleChange={handleChange}
+                handleChange={(e) => setTag(e.target.value)}
               />
             </div>
             <Button handleSubmit={handleSubmit}>Add Task</Button>
@@ -100,6 +116,7 @@ const TodoList = () => {
                     taskId={todo._id}
                     key={todo._id}
                     handleDelete={() => handleDelete(todo._id)}
+                    setIsEditFormValues={() => setIsEditFormValues(todo._id)}
                   />
                 ))}
             </div>
