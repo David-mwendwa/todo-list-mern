@@ -24,7 +24,7 @@ export const addTodo = (todo) => async (dispatch) => {
     const { data } = await axiosInstance.post('/todos', todo);
     dispatch({ type: ADD_TODO_SUCCESS, payload: data.todo });
   } catch (error) {
-    dispatch({ type: ADD_TODO_ERROR, payload: error.message });
+    dispatch({ type: ADD_TODO_ERROR, payload: error.response.data.message });
   }
 };
 
@@ -37,15 +37,13 @@ export const editTodo = (id, todo) => async (dispatch) => {
         'Content-Type': 'application/json',
       },
     };
-    console.log('edit request', id, todo);
     const { data } = await axiosInstance.patch(`/todos/${id}`, todo, config);
-    console.log('edit response', data);
     dispatch({
       type: EDIT_TODO_SUCCESS,
       payload: { todo: data.todo, isEdited: data.success, id },
     });
   } catch (error) {
-    dispatch({ type: EDIT_TODO_ERROR, payload: error.message });
+    dispatch({ type: EDIT_TODO_ERROR, payload: error.response.data.message });
   }
 };
 
@@ -62,7 +60,7 @@ export const fetchTodos = () => async (dispatch) => {
     const { data } = await axiosInstance('/todos');
     dispatch({ type: FETCH_TODOS_SUCCESS, payload: data.todos });
   } catch (error) {
-    dispatch({ type: FETCH_TODOS_ERROR, payload: error.message });
+    dispatch({ type: FETCH_TODOS_ERROR, payload: error.response.data.message });
   }
 };
 

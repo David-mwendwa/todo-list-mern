@@ -31,12 +31,13 @@ const TodoList = () => {
   const [task, setTask] = useState('');
   const [tag, setTag] = useState('');
   const [editId, setEditId] = useState('');
+  const [isEditable, setIsEditable] = useState(false);
   const dispatch = useDispatch();
   const todo = { task, tag };
 
   useEffect(() => {
     dispatch(fetchTodos());
-  }, [dispatch]);
+  }, [dispatch, isEditable]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -48,9 +49,12 @@ const TodoList = () => {
     setTag('');
   };
 
-  // TODO: handle submit after updating todo
+  // handle submit after editing todo
   const handleEditSubmit = (id, todo) => {
     dispatch(editTodo(id, todo));
+    setIsEditable(false);
+    setTask('');
+    setTag('');
   };
 
   const setIsEditFormValues = (id) => {
@@ -59,6 +63,7 @@ const TodoList = () => {
     setTask(_task);
     setTag(_tag);
     setEditId(id);
+    setIsEditable(true);
   };
 
   const handleDelete = async (taskId) => {
@@ -100,7 +105,13 @@ const TodoList = () => {
                 handleChange={(e) => setTag(e.target.value)}
               />
             </div>
-            <Button handleSubmit={handleSubmit}>Add Task</Button>
+            {!isEditable ? (
+              <Button handleSubmit={handleSubmit}>Add Task</Button>
+            ) : (
+              <Button handleSubmit={() => handleEditSubmit(editId, todo)}>
+                Update Task
+              </Button>
+            )}
           </div>
         </div>
         <div className='dashboard-right'>

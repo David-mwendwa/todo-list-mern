@@ -30,14 +30,14 @@ const createTodo = async (req, res) => {
 
 const updateTodo = async (req, res) => {
   const { id: todoId } = req.params;
-  const todo = await Todo.findOne({ _id: todoId });
+  let todo = await Todo.findById(todoId);
   if (!todo) {
     throw new Error(`No task with id: ${todoId}`);
   }
-  todo.name = req.body.name;
-  todo.status = req.body.status;
-  todo.priority = req.body.priority;
-  await todo.save();
+  todo = await Todo.findOneAndUpdate(todoId, req.body, {
+    new: true,
+    runValidators: true,
+  });
   res.status(StatusCodes.OK).json({ todo, success: true });
 };
 

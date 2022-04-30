@@ -33,7 +33,6 @@ const reducer = (state = { todos: [] }, action) => {
         loading: true,
       };
     case EDIT_TODO_SUCCESS:
-      console.log('edit payload match', action.payload);
       const { todo, id, isEdited } = action.payload;
       return {
         ...state,
